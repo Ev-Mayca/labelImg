@@ -247,6 +247,7 @@ Hotkeys
 
 When pressing space, the user can flag the image as verified, a green background will appear.
 This is used when creating a dataset automatically, the user can then through all the pictures and flag them instead of annotate them.
+修改testLabel.py中的路径，并执行python testLabel.py 可以快速的查看标注效果
 
 **Difficult:**
 
