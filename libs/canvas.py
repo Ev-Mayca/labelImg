@@ -271,7 +271,10 @@ class Canvas(QWidget):
             targetPos = self.line[1]
             maxX = targetPos.x()
             maxY = targetPos.y()
+            #midx = (minX + maxX)/2 
+            #midy = (minY + maxY)/2 
             self.current.addPoint(QPointF(maxX, minY))
+            #self.current.addPoint(QPointF(midx, midy))
             self.current.addPoint(targetPos)
             self.current.addPoint(QPointF(minX, maxY))
             self.finalise()
@@ -482,6 +485,9 @@ class Canvas(QWidget):
             pal.setColor(self.backgroundRole(), QColor(232, 232, 232, 255))
             self.setPalette(pal)
 
+        p.setPen(QColor(255, 0, 0))
+        p.drawLine(156, 0, 156, self.pixmap.height())
+        p.drawLine(1110, 0, 1110, self.pixmap.height())
         p.end()
 
     def transformPos(self, point):

@@ -227,6 +227,8 @@ class MainWindow(QMainWindow, WindowMixin):
 
         save = action(getStr('save'), self.saveFile,
                       'Ctrl+S', 'save', getStr('saveDetail'), enabled=False)
+        savedefault = action(getStr('save'), self.saveDefault,
+                      'e', 'savedefault', getStr('saveDetail'), enabled=False)
 
         save_format = action('&PascalVOC', self.change_format,
                       'Ctrl+', 'format_voc', getStr('changeSaveFormat'), enabled=True)
@@ -336,7 +338,7 @@ class MainWindow(QMainWindow, WindowMixin):
                               shapeLineColor=shapeLineColor, shapeFillColor=shapeFillColor,
                               zoom=zoom, zoomIn=zoomIn, zoomOut=zoomOut, zoomOrg=zoomOrg,
                               fitWindow=fitWindow, fitWidth=fitWidth,
-                              zoomActions=zoomActions,
+                              zoomActions=zoomActions,savedefault=savedefault,
                               fileMenuActions=(
                                   open, opendir, save, saveAs, close, resetAll, quit),
                               beginner=(), advanced=(),
@@ -346,7 +348,7 @@ class MainWindow(QMainWindow, WindowMixin):
                               advancedContext=(createMode, editMode, edit, copy,
                                                delete, shapeLineColor, shapeFillColor),
                               onLoadActive=(
-                                  close, create, createMode, editMode),
+                                  close, create, createMode, editMode,savedefault),
                               onShapesPresent=(saveAs, hideAll, showAll))
 
         self.menus = struct(
@@ -375,7 +377,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.displayLabelOption.triggered.connect(self.togglePaintLabelsOption)
 
         addActions(self.menus.file,
-                   (open, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save, save_format, saveAs, close, resetAll, quit))
+                   (open, opendir, changeSavedir, openAnnotation, self.menus.recentFiles, save,savedefault, save_format, saveAs, close, resetAll, quit))
         addActions(self.menus.help, (help, showInfo))
         addActions(self.menus.view, (
             self.autoSaving,
@@ -1330,6 +1332,22 @@ class MainWindow(QMainWindow, WindowMixin):
             savedPath = os.path.join(imgFileDir, savedFileName)
             self._saveFile(savedPath if self.labelFile
                            else self.saveFileDialog(removeExt=False))
+
+    def saveDefault(self,_value=False):
+        imgFileDir = os.path.dirname(self.filePath)
+        imgFileName = os.path.basename(self.filePath)
+        savedFileName = os.path.splitext(imgFileName)[0]
+        savedPath = os.path.join(imgFileDir, savedFileName)
+        self._saveFile(savedPath)
+
+        currIndex = self.mImgList.index(self.filePath)
+        if currIndex + 1 < len(self.mImgList):
+            filename = self.mImgList[currIndex + 1]
+        imgFileDir1 = os.path.dirname(filename)
+        imgFileName1 = os.path.basename(filename)
+        savedFileName1 = os.path.splitext(imgFileName1)[0]
+        savedPath1 = os.path.join(imgFileDir1, savedFileName1)
+        self.saveLabels(savedPath1)
 
     def saveFileAs(self, _value=False):
         assert not self.image.isNull(), "cannot save empty image"

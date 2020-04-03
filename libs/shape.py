@@ -38,7 +38,7 @@ class Shape(object):
     point_size = 8
     scale = 1.0
 
-    def __init__(self, label=None, line_color=None, difficult=False, paintLabel=False):
+    def __init__(self, label=None, line_color=None, difficult=False, paintLabel=True):
         self.label = label
         self.points = []
         self.fill = False
@@ -101,9 +101,13 @@ class Shape(object):
             # may be desirable.
             #self.drawVertex(vrtx_path, 0)
 
+            midx = 0
+            midy = 0
             for i, p in enumerate(self.points):
                 line_path.lineTo(p)
                 self.drawVertex(vrtx_path, i)
+                midx += self.points[i].x()
+                midy += self.points[i].y()
             if self.isClosed():
                 line_path.lineTo(self.points[0])
 
@@ -132,6 +136,9 @@ class Shape(object):
             if self.fill:
                 color = self.select_fill_color if self.selected else self.fill_color
                 painter.fillPath(line_path, color)
+                midx /=4
+                midy /=4
+                painter.fillRect(midx-2,midy-2,4,4,QColor(0,0,0))
 
     def drawVertex(self, path, i):
         d = self.point_size / self.scale
